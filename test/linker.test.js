@@ -28,192 +28,222 @@ test('linker#isRoutish', (t) => {
 
 test('Passing Linker Matches', (t) => {
     t.deepEquals(
-        linker({ text: 'main st' }, [
-            { id: 1, text: 'main st' }
+        linker([{ display: 'Main Street', tokenized: 'main st' }], [
+            { id: 1, name: { display: 'Main Street', tokenized: 'main st' } }
         ]),
-        [{ id: 1, text: 'main st' }],
+        [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' }, score: 100 }],
     'basic match');
 
     t.deepEquals(
-        linker({ text: 'main st' }, [
-            { id: 1, text: 'maim st' },
+        linker([{ display: 'Main Street', tokenized: 'main st' }], [
+            { id: 1, name: { display: 'Maim Street', tokenized: 'maim st' } },
         ]),
-        [{ id: 1, text: 'maim st', score: 85.71428571428572 }],
+        [{ id: 1, name: { display: 'Maim Street', tokenized: 'maim st' }, score: 85.71428571428572 }],
     'close match');
 
     t.deepEquals(
-        linker({ text: '1st st west' }, [
-            { id: 1, text: '2nd st west' },
+        linker([{ display: '1st Street West', tokenized: '1st st west' }], [
+            { id: 1, name: { display: '2nd Street West', tokenized: '2nd st west' } },
         ]),
         false,
     'no match numeric simple (2nd)');
 
     t.deepEquals(
-        linker({ text: '1st st west' }, [
-            { id: 1, text: '3rd st west' },
+        linker([{ display: '1st Street West', tokenized: '1st st west' }], [
+            { id: 1, name: { display: '3rd Street West', tokenized: '3rd st west' } },
         ]),
         false,
     'no match numeric simple (3rd)');
 
     t.deepEquals(
-        linker({ text: '1st st west' }, [
-            { id: 1, text: '4th st west' },
+        linker([{ display: '1st Street West', tokenized: '1st st west' }], [
+            { id: 1, name: { display: '4th Street West', tokenized: '4th st west' } },
         ]),
         false,
     'no match numeric simple (4th)');
 
     t.deepEquals(
-        linker({ text: '11th st west' }, [
-            { id: 1, text: '21st st west' },
+        linker([{ display: '11th Street West', tokenized: '11th st west' }], [
+            { id: 1, name: { display: '21st Street West', tokenized: '21st st west' } },
         ]),
         false,
     'no match numeric simple (21st)');
 
     t.deepEquals(
-        linker({ text: 'US Route 50 East' }, [
-            { id: 1, text: 'US Route 50 West' },
+        linker([{ display: 'US Route 50 East', tokenized: 'us route 50 east' }], [
+            { id: 1, name: { display: 'US Route 50 West', tokenized: 'us route 50 west' } },
         ]),
-        [{ id: 1, text: 'US Route 50 West', score: 87.5 }],
+        [{ id: 1, name: { display: 'US Route 50 West', tokenized: 'us route 50 west' }, score: 95.3125 }],
     'Numbers match - cardinals don\'t');
 
     t.deepEquals(
-        linker({ text: 'US Route 50 East' }, [
-            { id: 1, text: 'US Route 51 West' },
+        linker([{ display: 'US Route 60 East', tokenized: 'us route 50 east' }], [
+            { id: 1, name: { display: 'US Route 51 West', tokenized: 'us route 51 west' } },
         ]),
         false,
     'Number mismatch fail');
 
     t.deepEquals(
-        linker({ text: '11th st west' }, [
-            { id: 1, text: '11th av west' },
+        linker([{ display: '11th Street West', tokenized: '11th st west' }], [
+            { id: 1, name: { display: '11th Avenue West', tokenized: '11th av west' } },
         ]),
-        [ { id: 1, text: '11th av west', score: 83.33333333333334 } ],
+        [ { id: 1, name: { display: '11th Avenue West', tokenized: '11th av west' }, score: 94.44444444444444 } ],
     'match numeric simple (type mismatch)');
 
     t.deepEquals(
-        linker({ text: 'main st' }, [
-            { id: 1, text: 'main st' },
-            { id: 2, text: 'main av' },
-            { id: 3, text: 'main rd' },
-            { id: 4, text: 'main dr' }
+        linker([{ display: 'Main Street', tokenized: 'main st' }], [
+            { id: 1, name: { display: 'Main Street', tokenized: 'main st' } },
+            { id: 2, name: { display: 'Main Avenue', tokenized: 'main av' } },
+            { id: 3, name: { display: 'Main Road', tokenized: 'main rd' } },
+            { id: 4, name: { display: 'Main Drive', tokenized: 'main dr' } }
         ]),
-        [{ id: 1, text: 'main st' }],
+        [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' }, score: 100 }],
     'diff suff');
 
     t.deepEquals(
-        linker({ text: 'main st' }, [
-            { id: 1, text: 'main st' },
-            { id: 2, text: 'asdg st' },
-            { id: 3, text: 'asdg st' },
-            { id: 4, text: 'maim st' }
+        linker([{ display: 'Main Street', tokenized: 'main st' }], [
+            { id: 1, name: { display: 'Main Street', tokenized: 'main st' } },
+            { id: 2, name: { display: 'Asdg Street', tokenized: 'asdg st' } },
+            { id: 3, name: { display: 'Asdg Street', tokenized: 'asdg st' } },
+            { id: 4, name: { display: 'Maim Street', tokenized: 'maim st' } }
         ]),
-        [{ id: 1, text: 'main st' }],
+        [{ id: 1, name: { display: 'Main Street', tokenized: 'main st' }, score: 100 }],
     'diff name');
 
     t.deepEquals(
-        linker({ text: 'ola ave', text_tokenless: 'ola' }, [
-            { id: 1, text: 'ola', text_tokenless: 'ola'},
-            { id: 2, text: 'ola avg', text_tokenless: 'ola avg'}
+        linker([{ display: 'Ola Avenue', tokenized: 'ola ave', tokenless: 'ola' }], [
+            { id: 1, name: { display: 'Ola', tokenized: 'ola', tokenless: 'ola'} },
+            { id: 2, name: { display: 'Ola Avg' , tokenized: 'ola avg', tokenless: 'ola avg' } }
         ]),
-        [{ id: 1, text: 'ola', text_tokenless: 'ola', score: 80}],
+        [{ id: 1, name: { display: 'Ola', tokenized: 'ola', tokenless: 'ola' }, score: 80 }],
     'short names, tokens deweighted');
 
     t.deepEquals(
-        linker({ text: 'ave st', text_tokenless: '', _text: 'Avenue Street' }, [
-            { id: 1, text: 'ave', text_tokenless: '', _text: 'Avenue'},
-            { id: 2, text: 'avenida', text_tokenless: 'avenida'}
+        linker([{ tokenized: 'ave st', tokenless: '', display: 'Avenue Street' }], [
+            { id: 1, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' } },
+            { id: 2, name: { tokenized: 'avenida', tokenless: 'avenida' } }
         ]),
-        [{ id: 1, text: 'ave', text_tokenless: '', _text: 'Avenue'}],
+        [{ id: 1, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' }, score: 77.77777777777777 }],
     'all-token scenario (e.g. avenue street)');
 
     t.deepEquals(
-        linker({ text: 'ave st', text_tokenless: '', _text: 'Avenue Street' }, [
-            { id: 1, text: 'ave', text_tokenless: '', _text: 'Avenue'},
-            { id: 2, text: 'ave', text_tokenless: '', _text: 'Avenue'},
-            { id: 3, text: 'avenida', text_tokenless: 'avenida'}
+        linker([{ tokenized: 'ave st', tokenless: '', display: 'Avenue Street' }], [
+            { id: 1, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' } },
+            { id: 2, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' } },
+            { id: 3, name: { tokenized: 'avenida', tokenless: 'avenida' } }
         ]),
         [
-            { id: 1, text: 'ave', text_tokenless: '', _text: 'Avenue'},
-            { id: 2, text: 'ave', text_tokenless: '', _text: 'Avenue'}
+            { id: 1, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' }, score: 77.77777777777777 },
+            { id: 2, name: { tokenized: 'ave', tokenless: '', display: 'Avenue' }, score: 77.77777777777777 }
         ],
     'multiple winners (exact match)');
 
     t.deepEquals(
-        linker({ text: 'main st', text_tokenless: '', _text: 'Main Street' }, [
-            { id: 1, text: 'maim st', text_tokenless: 'maim', _text: 'Maim Street'},
-            { id: 2, text: 'maim st', text_tokenless: 'maim', _text: 'Maim Street'},
-            { id: 3, text: 'cross st', text_tokenless: 'cross', _text: 'Cross Street'}
+        linker([{ tokenized: 'main st west', tokenless: 'main' }], [
+            { id: 1, name: { tokenized: 'main rd', tokenless: 'main', display: 'Main Road' } },
+            { id: 2, name: { tokenized: 'main av', tokenless: 'main', display: 'Main Avenue' } },
+            { id: 3, name: { tokenized: 'main st', tokenless: 'main', display: 'Main Street' } }
+        ]),
+        [ { id: 3, name: { tokenized: 'main st', tokenless: 'main', display: 'Main Street' }, score: 86.84210526315789 }, ],
+    'Very Close Matches w/ tokenless');
+
+    t.deepEquals(
+        linker([{ display: 'Lake Street West', tokenized: 'lk ts w', tokenless: '' }], [
+            { id: 1, name: { tokenized: 'w lk st', tokenless: '', display: 'West Lake Street' } }
+        ]),
+        [ { id: 1, name: { tokenized: 'w lk st', tokenless: '', display: 'West Lake Street' }, score: 90.47619047619048 }, ],
+    'Match w/o tokenless');
+
+    t.deepEquals(
+        linker([{ tokenized: 'main st', tokenless: '', display: 'Main Street' }], [
+            { id: 1, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street' } },
+            { id: 2, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street' } },
+            { id: 3, name: { tokenized: 'cross st', tokenless: 'cross', display: 'Cross Street' } }
         ]),
         [
-            { id: 1, text: 'maim st', score: 85.71428571428572, text_tokenless: 'maim', _text: 'Maim Street'},
-            { id: 2, text: 'maim st', score: 85.71428571428572, text_tokenless: 'maim', _text: 'Maim Street'}
+            { id: 1, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street' }, score: 85.71428571428572 },
+            { id: 2, name: { tokenized: 'maim st', tokenless: 'maim', display: 'Maim Street'}, score: 85.71428571428572 }
         ],
     'multiple winners (score codepath)');
 
     t.deepEquals(
-        linker({ text: 's st nw', _text: 'S STREET NW', text_tokenless: null }, [
-            { id: 1250, text: 'p st ne', _text: 'P Street Northeast', text_tokenless: 'p' },
-            { id: 863, text: 's st nw', _text: 'S STREET NW', text_tokenless: '' },
-            { id: 862, text: 's st ne', _text: 'S STREET NE', text_tokenless: '' },
-            { id: 388, text: 'bates st nw', _text: 'BATES STREET NW', text_tokenless: 'bates' }
+        linker([{ tokenized: 's st nw', display: 'S STREET NW', tokenless: null }], [
+            { id: 1250, name: { tokenized: 'p st ne', display: 'P Street Northeast', tokenless: 'p' } },
+            { id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' } },
+            { id: 862, name: { tokenized: 's st ne', display: 'S STREET NE', tokenless: '' } },
+            { id: 388, name: { tokenized: 'bates st nw', display: 'BATES STREET NW', tokenless: 'bates' } }
         ]),
-        [ { id: 863, text: 's st nw', _text: 'S STREET NW', text_tokenless: '' } ],
-    'single winner w/ null text_tokenless');
+        [ { id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' }, score: 100 } ],
+    'single winner w/ null tokenless');
 
     t.deepEquals(
-        linker({ text: 's st nw', _text: 'S STREET NW', text_tokenless: null }, [
-            { id: 2421, text: 'n capitol st', _text: 'North Capitol Street', text_tokenless: 'capitol' },
-            { id: 669, text: 't st ne', _text: 'T Street Northeast', text_tokenless: 't' },
-            { id: 630, text: 'todd pl ne', _text: 'Todd Place Northeast', text_tokenless: 'todd' },
-            { id: 1007, text: 'u st ne', _text: 'U Street Northeast', text_tokenless: 'u' },
-            { id: 2286, text: 'v st ne', _text: 'V Street Northeast', text_tokenless: 'v' },
-            { id: 1026, text: 'u st nw', _text: 'U STREET NW', text_tokenless: 'u' },
-            { id: 680, text: 't st nw', _text: 'T STREET NW', text_tokenless: 't' },
-            { id: 2231, text: 'rhode is av ne', _text: 'Rhode Island Avenue Northeast', text_tokenless: 'rhode' },
-            { id: 1199, text: 'n capitol st ne', _text: 'North Capitol Street Northeast', text_tokenless: 'capitol' },
-            { id: 2031, text: 'n capitol st nw', _text: 'NORTH CAPITOL STREET NW', text_tokenless: 'capitol' },
-            { id: 224, text: 'elm st nw', _text: 'Elm Street Northwest', text_tokenless: 'elm' },
-            { id: 388, text: 'bates st nw', _text: 'BATES STREET NW', text_tokenless: 'bates' },
-            { id: 863, text: 's st nw', _text: 'S STREET NW', text_tokenless: '' },
-            { id: 1365, text: 'rhode is av nw', _text: 'RHODE ISLAND AVENUE NW', text_tokenless: 'rhode' },
-            { id: 2366, text: 'r st nw', _text: 'R STREET NW', text_tokenless: '' },
-            { id: 189, text: 'randolph pl ne', _text: 'Randolph Place Northeast',text_tokenless: 'randolph' },
-            { id: 296, text: 'rt 1', _text: 'ROUTE 1', text_tokenless: '1' },
-            { id: 629, text: 'lincoln rd ne', _text: 'Lincoln Road Northeast', text_tokenless: 'lincoln' },
-            { id: 1662, text: 'quincy pl ne', _text: 'Quincy Place Northeast', text_tokenless: 'quincy' },
-            { id: 852, text: '1st st nw', _text: 'First Street Northwest', text_tokenless: null },
-            { id: 920, text: 'porter st ne', _text: 'Porter Street Northeast', text_tokenless: 'porter' },
-            { id: 1037, text: 'quincy pl nw', _text: 'Quincy Place Northwest', text_tokenless: 'quincy' },
-            { id: 959, text: 'florida av ne', _text: 'Florida Avenue Northeast',text_tokenless: 'florida' },
-            { id: 969, text: 'richardson pl nw', _text: 'Richardson Place Northwest', text_tokenless: 'richardson' },
-            { id: 1898, text: '1st st ne', _text: 'First Street Northeast', text_tokenless: null },
-            { id: 1929, text: 'q st ne', _text: 'Q Street Northeast', text_tokenless: 'q' },
-            { id: 2053, text: 'florida av nw', _text: 'Florida Ave NW', text_tokenless: 'florida' },
-            { id: 1250, text: 'p st ne', _text: 'P Street Northeast', text_tokenless: 'p' },
-            { id: 1243, text: 's st ne', _text: 'S Street Northeast', text_tokenless: null },
-            { id: 1874, text: 'r st ne', _text: 'R Street Northeast', text_tokenless: null },
-            { id: 2472, text: 'seaton pl ne', _text: 'Seaton Place Northeast', text_tokenless: 'seaton' },
-            { id: 1893, text: 'randolph pl nw', _text: 'Randolph Place Northwest', text_tokenless: 'randolph' },
-            { id: 2074, text: 'anna j cooper cir nw', _text: 'Anna J Cooper Circle Northwest', text_tokenless: 'anna j cooper' },
-            { id: 69, text: 'p st nw', _text: 'P STREET NW', text_tokenless: 'p' },
-            { id: 2225, text: 'q st nw', _text: 'Q STREET NW', text_tokenless: 'q' },
-            { id: 424, text: '4th st nw', _text: '4th Street Northwest', text_tokenless: null },
-            { id: 761, text: 'v st nw', _text: 'V Street Northwest', text_tokenless: 'v' },
-            { id: 1210, text: '3rd st nw', _text: '3rd Street Northwest', text_tokenless: null },
-            { id: 1481, text: 'seaton pl nw', _text: 'Seaton Place Northwest', text_tokenless: 'seaton' },
-            { id: 460, text: 'flagler pl nw', _text: 'Flagler Place Northwest', text_tokenless: 'flagler' },
-            { id: 565, text: '2nd st nw', _text: '2nd Street Northwest', text_tokenless: null },
-            { id: 2402, text: 'thomas st nw', _text: 'Thomas Street Northwest', text_tokenless: 'thomas' }
+        linker([{ tokenized: 'w main st', display: 'West Main Street', tokenless: 'main' }], [
+            { id: 388, name: { tokenized: 'w st st', display: 'West Saint Street', tokenless: '' } }
         ]),
-        [ { id: 863, text: 's st nw', _text: 'S STREET NW', text_tokenless: '' } ],
+        false,
+    'close tokenized');
+
+    t.deepEquals(
+        linker([{ tokenized: 'w st st', display: 'West Saint Street', tokenless: '' }], [
+            { id: 388, name: { tokenized: 'w main st', display: 'West Main Street', tokenless: 'main' } }
+        ]),
+        false,
+    'close tokenized reverse');
+
+    t.deepEquals(
+        linker([{ tokenized: 's st nw', display: 'S STREET NW', tokenless: null }], [
+            { id: 2421, name: { tokenized: 'n capitol st', display: 'North Capitol Street', tokenless: 'capitol' } },
+            { id: 669, name: { tokenized: 't st ne', display: 'T Street Northeast', tokenless: 't' } },
+            { id: 630, name: { tokenized: 'todd pl ne', display: 'Todd Place Northeast', tokenless: 'todd' } },
+            { id: 1007, name: { tokenized: 'u st ne', display: 'U Street Northeast', tokenless: 'u' } },
+            { id: 2286, name: { tokenized: 'v st ne', display: 'V Street Northeast', tokenless: 'v' } },
+            { id: 1026, name: { tokenized: 'u st nw', display: 'U STREET NW', tokenless: 'u' } },
+            { id: 680, name: { tokenized: 't st nw', display: 'T STREET NW', tokenless: 't' } },
+            { id: 2231, name: { tokenized: 'rhode is av ne', display: 'Rhode Island Avenue Northeast', tokenless: 'rhode' } },
+            { id: 1199, name: { tokenized: 'n capitol st ne', display: 'North Capitol Street Northeast', tokenless: 'capitol' } },
+            { id: 2031, name: { tokenized: 'n capitol st nw', display: 'NORTH CAPITOL STREET NW', tokenless: 'capitol' } },
+            { id: 224, name: { tokenized: 'elm st nw', display: 'Elm Street Northwest', tokenless: 'elm' } },
+            { id: 388, name: { tokenized: 'bates st nw', display: 'BATES STREET NW', tokenless: 'bates' } },
+            { id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' } },
+            { id: 1365, name: { tokenized: 'rhode is av nw', display: 'RHODE ISLAND AVENUE NW', tokenless: 'rhode' } },
+            { id: 2366, name: { tokenized: 'r st nw', display: 'R STREET NW', tokenless: '' } },
+            { id: 189, name: { tokenized: 'randolph pl ne', display: 'Randolph Place Northeast',tokenless: 'randolph' } },
+            { id: 296, name: { tokenized: 'rt 1', display: 'ROUTE 1', tokenless: '1' } },
+            { id: 629, name: { tokenized: 'lincoln rd ne', display: 'Lincoln Road Northeast', tokenless: 'lincoln' } },
+            { id: 1662, name: { tokenized: 'quincy pl ne', display: 'Quincy Place Northeast', tokenless: 'quincy' } },
+            { id: 852, name: { tokenized: '1st st nw', display: 'First Street Northwest', tokenless: null } },
+            { id: 920, name: { tokenized: 'porter st ne', display: 'Porter Street Northeast', tokenless: 'porter' } },
+            { id: 1037, name: { tokenized: 'quincy pl nw', display: 'Quincy Place Northwest', tokenless: 'quincy' } },
+            { id: 959, name: { tokenized: 'florida av ne', display: 'Florida Avenue Northeast',tokenless: 'florida' } },
+            { id: 969, name: { tokenized: 'richardson pl nw', display: 'Richardson Place Northwest', tokenless: 'richardson' } },
+            { id: 1898, name: { tokenized: '1st st ne', display: 'First Street Northeast', tokenless: null } },
+            { id: 1929, name: { tokenized: 'q st ne', display: 'Q Street Northeast', tokenless: 'q' } },
+            { id: 2053, name: { tokenized: 'florida av nw', display: 'Florida Ave NW', tokenless: 'florida' } },
+            { id: 1250, name: { tokenized: 'p st ne', display: 'P Street Northeast', tokenless: 'p' } },
+            { id: 1243, name: { tokenized: 's st ne', display: 'S Street Northeast', tokenless: null } },
+            { id: 1874, name: { tokenized: 'r st ne', display: 'R Street Northeast', tokenless: null } },
+            { id: 2472, name: { tokenized: 'seaton pl ne', display: 'Seaton Place Northeast', tokenless: 'seaton' } },
+            { id: 1893, name: { tokenized: 'randolph pl nw', display: 'Randolph Place Northwest', tokenless: 'randolph' } },
+            { id: 2074, name: { tokenized: 'anna j cooper cir nw', display: 'Anna J Cooper Circle Northwest', tokenless: 'anna j cooper' } },
+            { id: 69, name: { tokenized: 'p st nw', display: 'P STREET NW', tokenless: 'p' } },
+            { id: 2225, name: { tokenized: 'q st nw', display: 'Q STREET NW', tokenless: 'q' } },
+            { id: 424, name: { tokenized: '4th st nw', display: '4th Street Northwest', tokenless: null } },
+            { id: 761, name: { tokenized: 'v st nw', display: 'V Street Northwest', tokenless: 'v' } },
+            { id: 1210, name: { tokenized: '3rd st nw', display: '3rd Street Northwest', tokenless: null } },
+            { id: 1481, name: { tokenized: 'seaton pl nw', display: 'Seaton Place Northwest', tokenless: 'seaton' } },
+            { id: 460, name: { tokenized: 'flagler pl nw', display: 'Flagler Place Northwest', tokenless: 'flagler' } },
+            { id: 565, name: { tokenized: '2nd st nw', display: '2nd Street Northwest', tokenless: null } },
+            { id: 2402, name: { tokenized: 'thomas st nw', display: 'Thomas Street Northwest', tokenless: 'thomas' } }
+        ]),
+        [ { id: 863, name: { tokenized: 's st nw', display: 'S STREET NW', tokenless: '' }, score: 100 } ],
     'Ensure short circuiting never beats an exact match');
     t.end();
 });
 
 test('Failing Linker Matches', (t) => {
     t.deepEquals(
-        linker({ text: 'main st' }, [
-            { id: 1, text: 'anne blvd' }
+        linker([{ display: 'Main Street', tokenized: 'main st' }], [
+            { id: 1, name: { display: 'Anne Boulevard', tokenized: 'anne blvd' } }
         ]),
         false,
     'basic fail');

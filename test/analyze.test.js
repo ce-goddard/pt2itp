@@ -34,14 +34,14 @@ test('Init db', (t) => {
         pool.query(`
             BEGIN;
             DELETE FROM address_cluster;
-            INSERT INTO address_cluster (id, text, text_tokenless, _text) VALUES
-                (1, '{"akoko st"}', '{"akoko"}', '{"Akoko Street", "Akoko Rd"}'),
-                (2, '{"wong ho ln"}', '{"wong ho"}', '{"Wong Ho Lane"}'),
-                (3, '{"pier 1"}', '{"pier 1"}', '{"Pier 1"}'),
-                (4, '{"main st"}', '{"main"}', '{"Main St"}'),
-                (5, '{"fake st"}', '{"fake"}', '{"Fake St"}'),
-                (6, '{"elm way"}', '{"elm"}', '{"Elm Way"}'),
-                (7, '{"evergreen tr"}', '{"evergreen"}', '{"Evergreen Terrace"}');
+            INSERT INTO address_cluster (id, name) VALUES
+                (1, '[{ "tokenized": "akoko st", "tokenless": "akoko", "display": "Akoko Street" }, { "tokenized": "akoko rd", "tokenless": "akoko", "display": "Akoko Rd" }]'),
+                (2, '[{ "tokenized": "wong ho ln", "tokenless": "wong ho", "display": "Wong Ho Lane" }]'),
+                (3, '[{ "tokenized": "pier 1", "tokenless": "pier 1", "display": "Pier 1" }]'),
+                (4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main St" }]'),
+                (5, '[{ "tokenized": "fake st", "tokenless": "fake", "display": "Fake St" }]'),
+                (6, '[{ "tokenized": "elm way", "tokenless": "elm", "display": "Elm Way" }]'),
+                (7, '[{ "tokenized": "evergreen tr", "tokenless": "evergreen", "display": "Evergreen Terrace" }]');
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -53,14 +53,15 @@ test('Init db', (t) => {
         pool.query(`
             BEGIN;
             DELETE FROM network_cluster;
-            INSERT INTO network_cluster (id, address, _text, text_tokenless) VALUES
-                (1, 1, 'Akoko Street', 'Akoko'),
-                (2, 2, 'Wong Ho Lane', 'Wong Ho'),
-                (3, 3, 'Pier 1',       'Pier 1'),
-                (4, 4, 'Main St',      'Main'),
-                (5, 5, 'Fake St',      'Fake'),
-                (6, 6, 'Canal St',      'Canal'),
-                (5, 7, 'Lonely Street', 'Lonely');
+            INSERT INTO network_cluster (id, address, name) VALUES
+                (1, 1, '[{ "tokenized": "akoko st", "tokenless": "akoko", "display": "Akoko Street" }]'),
+                (2, 2, '[{ "tokenized": "wong ho ln", "tokenless": "wong ho", "display": "Wong Ho Lane" }]'),
+                (3, 3, '[{ "tokenized": "pier 1", "tokenless": "pier 1", "display": "Pier 1" }]'),
+                (4, 4, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main St" }]'),
+                (5, 5, '[{ "tokenized": "fake st", "tokenless": "fake", "display": "Fake St" }]'),
+                (6, 6, '[{ "tokenized": "canal st", "tokenless": "canal", "display": "Canal St" }]'),
+                (7, 7, '[{ "tokenized": "lonely st", "tokenless": "lonely", "display": "Lonely Street" }]');
+
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -88,7 +89,7 @@ test('Results from extractTextField', (t) => {
 });
 
 test('format data from text extraction', (t) => {
-    let fixture = [ { _text: 'Akoko Street' }, { _text: 'Akala Lane' }, { _text: 'Dreier Street' }];
+    let fixture = [ { name: [{ display: 'Akoko Street' }] }, { name: [{ display: 'Akala Lane' }] }, { name: [{ display: 'Dreier Street' }] }];
     let expected = analyser.formatData(fixture);
     t.deepEquals(expected, [ 'Akoko Street', 'Akala Lane', 'Dreier Street' ], 'Data formatted correctly');
     t.end();

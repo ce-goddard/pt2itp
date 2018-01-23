@@ -22,7 +22,7 @@ test('geocode#isPass', (t) => {
             tokens: tokens.createReplacer(['en'])
         },
         function(err, res) {
-            t.error(err)
+            t.error(err);
             t.notok(res);
 
             t.end();

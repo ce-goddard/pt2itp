@@ -11,8 +11,14 @@ jobs:
 
         steps:
             - run:
+                name: "Add ubuntu-toolchain"
+                command: "apt-get update -y && apt-get install -y build-essential python software-properties-common && add-apt-repository --yes ppa:ubuntu-toolchain-r/test"
+            - run:
                 name: "Install cURL"
                 command: "apt-get update -y && apt-get install -y curl"
+            - run:
+                name: "Install Compiler for Native Modules"
+                command: "apt-get -y install libstdc++-5-dev gcc-4.8 g++-4.8; export CXX=g++-4.8"
             - run:
                 name: "Install node with nvm"
                 command: "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash && export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && nvm install 6.10.3"

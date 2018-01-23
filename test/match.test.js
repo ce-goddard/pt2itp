@@ -28,7 +28,7 @@ test('Match', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO network_cluster (id, text, text_tokenless, _text, geom) VALUES (1, 'main st', 'main', 'Main Street', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05180561542511, 45.26869136632906, 1 ], [ -66.05007290840149, 45.268982070325656, 1 ] ] }'), 4326)));
+            INSERT INTO network_cluster (id, name, geom) VALUES (1, '{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }', ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "LineString", "coordinates": [ [ -66.05180561542511, 45.26869136632906, 1 ], [ -66.05007290840149, 45.268982070325656, 1 ] ] }'), 4326)));
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -40,8 +40,8 @@ test('Match', (t) => {
     popQ.defer((done) => {
         pool.query(`
             BEGIN;
-            INSERT INTO address (id, text, text_tokenless, _text, number, geom) VALUES (1, 'main st', 'main', 'Main Street', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249, 10 ] }'), 4326));
-            INSERT INTO address (id, text, text_tokenless, _text, number, geom) VALUES (2, 'fake av', 'fake', 'Fake Avenue', 12, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249, 12 ] }'), 4326));
+            INSERT INTO address (id, name, number, geom) VALUES (1, '[{ "tokenized": "main st", "tokenless": "main", "display": "Main Street" }]', 10, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249, 10 ] }'), 4326));
+            INSERT INTO address (id, name, number, geom) VALUES (2, '[{ "tokenized": "fake av", "tokenless": "fake", "display": "Fake Avenue" }]', 12, ST_SetSRID(ST_GeomFromGeoJSON('{ "type": "Point", "coordinates": [ -66.05154812335967, 45.26861208316249, 12 ] }'), 4326));
             COMMIT;
         `, (err, res) => {
             t.error(err);
@@ -70,19 +70,19 @@ test('Match', (t) => {
 
     popQ.defer((done) => {
         pool.query(`
-            SELECT id, text, netid FROM address ORDER BY id;
+            SELECT id, name, netid FROM address ORDER BY id;
         `, (err, res) => {
             t.error(err);
 
             t.deepEquals(res.rows[0], {
                 id: 1,
-                text: 'main st',
+                name: [ { display: 'Main Street', tokenized: 'main st', tokenless: 'main' } ],
                 netid: '1'
             });
 
             t.deepEquals(res.rows[1], {
                 id: 2,
-                text: 'fake av',
+                name: [ { display: 'Fake Avenue', tokenized: 'fake av', tokenless: 'fake' } ],
                 netid: null
             });
 

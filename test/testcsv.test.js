@@ -4,9 +4,9 @@ const test = require('tape');
 const path = require('path');
 
 const carmenIndex = path.resolve(__dirname, './fixtures/test-ri/index/us_ri-address-both-0d603c2a171017011038-0d603c2a39.mbtiles');
-let input = path.resolve(__dirname, './fixtures/test-ri/address.csv');
-let output = '/tmp/testcsv-ri.err';
-const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config.json');
+const input = path.resolve(__dirname, './fixtures/test-ri/address.csv');
+const output = '/tmp/testcsv-ri.err';
+const config = path.resolve(__dirname, './fixtures/test-ri/carmen-config2.json');
 
 test('testcsv', (t) => {
     t.test('Return correct std.err message', (t) => {
@@ -14,17 +14,16 @@ test('testcsv', (t) => {
         st.stderr.match(`
             ERROR TYPE                   COUNT
             -----------------------------------------------------------------------------------
-            DIST                             2 ( 50.0% of errors | 18.2% of total addresses)
-            NO RESULTS                       2 ( 50.0% of errors | 18.2% of total addresses)
+            DIST                             6 ( 50.0% of errors | 18.2% of total addresses)
+            NO RESULTS                       6 ( 50.0% of errors | 18.2% of total addresses)
 
-            ok - 4/11 (36.4%) failed to geocode
+            ok - 12/33 (36.4%) failed to geocode
             ok - 0/0 (NaN%) ITP results failed to geocode
 
             DIST statistical breakdown
             -----------------------------------------------------------------------------------
-            DIST - mean: 7352.73 / median: 7352.73 / skew: null / standard dev: 6879.86
+            DIST - mean: 7352.73 / median: 7352.73 / skew: 0.00 / standard dev: 6879.86
         `.replace(/^ +/mg, ''));
-
         st.end();
     });
 
@@ -36,7 +35,7 @@ test('testcsv', (t) => {
             csvErrs.push(data);
         })
         .on('end', () => {
-            t.equal(csvErrs.length, 4);
+            t.equal(csvErrs.length, 12);
             t.equal(csvErrs.filter(ele => ele.query === '26 Greenview Rd')[0].error, 'DIST');
             t.equal(csvErrs.filter(ele => ele.query === '31 Greenview Rd')[0].error, 'DIST');
             t.equal(csvErrs.filter(ele => ele.query === '34 grn vw rd')[0].error, 'NO RESULTS');

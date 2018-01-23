@@ -27,6 +27,52 @@ test('Strip-Unit', (t) => {
     t.equals(map({
         type: 'Feature',
         properties: {
+            number: ' \t '
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have non-empty number property', 'Feat must have non-empty number property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: []
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have a string or numeric number property', 'Feat must have a string or numeric number property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 'xyz',
+            street: 'Main St'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat number is not a supported address/unit type', 'Feat number is not a supported address/unit type');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: '42352426897',
+            street: 'Main St'
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Number should not exceed 10 chars', 'Number should not exceed 10 chars');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
             number: 1
         },
         geometry: {
@@ -44,6 +90,60 @@ test('Strip-Unit', (t) => {
             type: 'Point'
         }
     }).toString(), 'Error: Feat must have non-empty street property', 'Feat must have non-empty street property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: []
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have non-empty street property', 'Feat must have non-empty street property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: 123
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Feat must have a string or array street property', 'Feat must have a string or array street property');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: [{
+                name: 'Main St'
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Synonym objects in street array must contain only display and priority properties', 'Synonym objects in street array must contain only display and priority properties');
+
+    t.equals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: [{
+                display: 'Main St',
+                priority: 'first'
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }).toString(), 'Error: Display property must be a string and priority property must be a number', 'Display property must be a string and priority property must be a number');
+
 
     t.equals(map({
         type: 'Feature',
@@ -80,30 +180,6 @@ test('Strip-Unit', (t) => {
         }
     }).toString(), 'Error: Feat exceeds +/-85deg coord bounds', 'Feat exceeds +/-85deg coord bounds');
 
-    t.equals(map({
-        type: 'Feature',
-        properties: {
-            number: 'xyz',
-            street: 'Main St'
-        },
-        geometry: {
-            type: 'Point',
-            coordinates: [0, 0]
-        }
-    }).toString(), 'Error: Feat is not a supported address/unit type', 'Feat is not a supported address/unit type');
-
-    t.equals(map({
-        type: 'Feature',
-        properties: {
-            number: '423524268974602783406982734',
-            street: 'Main St'
-        },
-        geometry: {
-            type: 'Point',
-            coordinates: [0, 0]
-        }
-    }).toString(), 'Error: Number should not exceed 10 chars', 'Number should not exceed 10 chars');
-
     t.deepEquals(map({
         type: 'Feature',
         properties: {
@@ -116,7 +192,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '124', street: 'Main St' },
+        properties: { number: '124', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working Numeric Address');
 
@@ -132,7 +208,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '124', street: 'Main St' },
+        properties: { number: '124', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working String Address');
 
@@ -148,7 +224,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123a', street: 'Main St' },
+        properties: { number: '123a', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123a Address');
 
@@ -164,7 +240,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123', street: 'Main St' },
+        properties: { number: '123', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Stripped 123 1/2 Address');
 
@@ -180,7 +256,7 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123-45', street: 'Main St' },
+        properties: { number: '123-45', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123-45 Address');
 
@@ -196,15 +272,18 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123n45', street: 'Main St' },
+        properties: { number: '123n45', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
     }, 'Working 123n45 Address');
 
     t.deepEquals(map({
         type: 'Feature',
         properties: {
-            number: '123 B',
-            street: 'Main St'
+            number: 1,
+            street: [{
+                display: 'Main St',
+                priority: 0
+            }]
         },
         geometry: {
             type: 'Point',
@@ -212,10 +291,32 @@ test('Strip-Unit', (t) => {
         }
     }), {
         geometry: { coordinates: [ 0, 0 ], type: 'Point' },
-        properties: { number: '123b', street: 'Main St' },
+        properties: { number: '1', street: [{ display: 'Main St', priority: 0 }] },
         type: 'Feature'
-    }, 'Working 123 B => 123B Address');
+    }, 'Working street array address with one synonym');
+
+    t.deepEquals(map({
+        type: 'Feature',
+        properties: {
+            number: 1,
+            street: [{
+                display: 'Main St',
+                priority: 0
+            },
+            {
+                display: 'Hwy 101',
+                priority: 1
+            }]
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [0, 0]
+        }
+    }), {
+        geometry: { coordinates: [ 0, 0 ], type: 'Point' },
+        properties: { number: '1', street: [{ display: 'Main St', priority: 0 },{ display: 'Hwy 101', priority: 1 }] },
+        type: 'Feature'
+    }, 'Working street array address with two synonyms');
 
     t.end();
 });
-

@@ -1,0 +1,13 @@
+error,query,query pt,net text,addr text,returned pt,dist (km)
+NO RESULTS,"10,greenview,rd","-71.49164,41.731632",,,,
+NO RESULTS,"14,greenview,rd","-71.49189,41.731598",,,,
+NO RESULTS,"5,greeeeeenview,rd","-71.4909,41.73209",,,,
+NO RESULTS,"6,greenview,rd","-71.4913,41.73162",,,,
+NO RESULTS,"26,greenview,rd","-71.49248,41.731575",,,,
+NO RESULTS,"7,greenview,rd","-71.491196,41.732082",,,,
+NO RESULTS,"34,greenview,rd","-71.49282,41.731564",,,,
+NO RESULTS,"11,greenview,rd","-71.49149,41.731995",,,,
+NO RESULTS,"20,greenview,rd","-71.49219,41.731606",,,,
+NO RESULTS,"40,greenview,rd","-71.4932,41.73166",,,,
+NO RESULTS,"31,greenview,rd","-71.492676,41.73194",,,,
+NAME MISMATCH (SOFT),,"-71.4909,41.73209",Greenview Rd,Greeeeeenview Rd,,

@@ -1,45 +1,67 @@
-# Pts => Interpolation
+<h1 align="center">PT2ITP</h1>
 
-[![Coverage Status](https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master)](https://coveralls.io/github/ingalls/pt2itp?branch=master)
-[![Circle CI](https://circleci.com/gh/ingalls/pt2itp/tree/master.svg?style=shield)](https://circleci.com/gh/ingalls/pt2itp/tree/master)
-[![David DM](https://david-dm.org/ingalls/pt2itp.svg)](https://david-dm.org/ingalls/pt2itp)
-[![David DM Dev](https://david-dm.org/ingalls/pt2itp/dev-status.svg)](https://david-dm.org/ingalls/pt2itp?type=dev)
-[![Greenkeeper badge](https://badges.greenkeeper.io/ingalls/pt2itp.svg)](https://greenkeeper.io/)
+<p align="center">
+  <a href="https://coveralls.io/github/ingalls/pt2itp?branch=master"><img src="https://coveralls.io/repos/github/ingalls/pt2itp/badge.svg?branch=master"/></a>
+  <a href="https://circleci.com/gh/ingalls/pt2itp/tree/master"><img src="https://circleci.com/gh/ingalls/pt2itp/tree/master.svg?style=shield"/></a>
+  <a href="https://david-dm.org/ingalls/pt2itp"><img src="https://david-dm.org/ingalls/pt2itp.svg"/></a>
+  <a href="https://david-dm.org/ingalls/pt2itp?type=dev"><img src="https://david-dm.org/ingalls/pt2itp/dev-status.svg"/></a>
+  <a href="https://greenkeeper.io/"><img src="https://badges.greenkeeper.io/ingalls/pt2itp.svg"/></a>
+</p>
 
-[![NPM](https://nodei.co/npm/pt2itp.png?downloads=true&downloadRank=true)](https://www.npmjs.com/package/pt2itp)
+<p align="center">
+  <a href="https://www.npmjs.com/package/pt2itp"><img src="https://nodei.co/npm/pt2itp.png?downloads=true&downloadRank=true"/></a>
+</p>
 
+## Brief
 
 Given a road network and a set of address points as line delimited geojson; output an interpolation network.
 
-## Input Data
+## `map` Mode
 
-### Address Input
+### Basic Usage
+
+`map` mode is the core mode that PT2ITP exposes. It is responsible for taking the input street network and address points
+and generating the interpolation network.
+
+Basic Usage:
+```
+./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=./lib/tokens/en.json"
+```
+
+Full Options:
+```
+./index.js map --help
+```
+
+### Input Data
+
+#### Address Input
 
 Input line-delimited geojson features of points. Each point should have a property called `street` containing the street name
 and `number` containing the street address.
 
-### Properties
+#### Properties
 
 | Property | Function |
 | :------: | -------- |
 | `number` | `String` The Housenumber for a given pt including any unit information. ie: `10a` |
-| `street` | `String` The name of the street - preferably non-abbreviated |
+| `street` | `String` or `Array` The name of the street - preferably non-abbreviated. If it's an array, it must contain an object for each street name synonym with the properties `display` for the street name and `priority` for the numeric ranking. |
 | `source` | `String` The source name of the data so a single input file can have a combination of multiple sources |
-| `output` | `Boolean` A boolean allowing pts to be used to calculate the ITP segement but not output in the final cluster |
+| `output` | `Boolean` A boolean allowing pts to be used to calculate the ITP segment but not output in the final cluster |
 
-#### Example
+##### Example
 
 ```
 { "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": "Main Street", "number": 10 } }
-{ "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": "Main Street", "number": 11 } }
+{ "type": "Feature", "geometry": { "type": "Point", ... }, "properties": { "street": [ { display: "Main Street", priority: 0  } ], "number": 11 } }
 ...
 ```
 
-### Street Network Input
+#### Street Network Input
 
 Input line-delimited geojson features of lines. Each line should have a property called `street` containing the street name.
 
-#### Example
+##### Example
 
 ```
 { "type": "Feature", "geometry": { "type": "LineString", ... }, "properties": { "street": "Main Street" } }
@@ -47,10 +69,23 @@ Input line-delimited geojson features of lines. Each line should have a property
 ...
 ```
 
-## Generating Interpolation Network
+## `convert` Mode
 
+### Basic Usage
+
+Converts the PT2ITP standard of line delimited geojson features into the more widely
+supported GeoJSON FeatureCollections. Note that since GeoJSON is a text based format
+this should not be used for huge numbers of features as most parsing software will
+run out of memory.
+
+Basic Usage:
 ```
-./index.js map --in-network=<FILE.geojson> --in-address=<File.geojson> --output=<File.geojson> --tokens=./lib/tokens/en.json"
+./index.js convert --input linedelimited.geojson --output featurecollection.geojson
+```
+
+Full Options:
+```
+./index.js convert --help
 ```
 
 ## Version Numbers

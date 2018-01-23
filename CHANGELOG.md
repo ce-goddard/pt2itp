@@ -10,52 +10,123 @@
 
 ## Version History
 
-## v13.8.8
+### v14.3.0
+
+- :tada: use global tokens
+
+### v14.2.9
+
+- :bug: use all 53 available bits when setting feature ID, to lower the chance of a collision
+
+### v14.2.8
+
+- :arrow_up: New `es` and `en` tokens
+
+### v14.2.7
+
+- :arrow_up: Swedish address tokens
+
+### v14.2.6
+
+- :arrow_up: Update to latest deps
+
+### v14.2.5
+
+- :arrow_up: Update to latest carmen dep
+
+### v14.2.4
+
+- :rocket: Add more `US Route` synonyms
+
+### v14.2.3
+
+- :rocket: Add diagonal cardinals
+
+### v14.2.2
+
+- :rocket: Fix readme formatting
+- :bug: A second bug in custom post fxn calls
+
+### v14.2.1
+
+- :bug: Fix longstanding bug in previously unused post opts
+
+### v14.2.0
+
+- :arrow_up: Update deps to the latest and greatest
+- :rocket: Add support for a wide range of US Route synonyms
+- :rocket: Add support for `five => 5` matches in network names
+
+### v14.1.1
+
+- :bug: return an error if an input GeoJSON feature's `number` property is nonempty whitespace or not a string or number
+- :white_check_mark: test above behavior
+
+### v14.1.0
+
+- :tada: add :non-preferred street tokens: IE: 'ext', 'unit', 'exit' etc which suggest an incorrect name.
+- :tata: track `freq` value that is used to determine the best match based on the frequency of a given name.
+
+### v14.0.1
+
+- :bug: Fix failing test
+
+### v14.0.0
+
+- :tada: Autonaming is now off by default as it lead to significant false positive matches
+- :rocket: Use JSON format for all names to allow better prioritization & deduplication
+- :bug: Fix LOG file tracking to avoid logs being commited every time tests are run
+
+### v13.8.9
+
+- :white_check_mark: change testcsv test fixtures to a csv with > 25 rows
+
+### v13.8.8
 
 - :rocket: omit querying for N during diff name test
 
-## v13.8.7
+### v13.8.7
 
 - :rocket: Add a few more highway synonyms
 
-## v13.8.6
+### v13.8.6
 
 - :bug: fix testcsv linestring interaction
 
-## v13.8.5
+### v13.8.5
 
 - :rocket: improve handling of numeric-with-suffix streets in testcsv mode
 - :bug: pass through returned coordinates for `TEXT` failures in test modes
 
-## v13.8.4
+### v13.8.4
 
 - :rocket: faster querying for N during diff name test
 
-## v13.8.3
+### v13.8.3
 
 - :bug: Token would ignore address matches, resulting in a max match of <100%
 
-## v13.8.2
+### v13.8.2
 
 - :white_check_mark: Add lib/geocode tests
 
-## v13.8.1
+### v13.8.1
 
 - :bug: testcsv mode no longer errs on csvStream.resume
 
-## v13.8.0
+### v13.8.0
 
 - :rocket: Much improved matching of streets containing numeric values
 
-## v13.7.2
+### v13.7.2
 
 - :arrow_up: Update carmen
 
-## v13.7.1
+### v13.7.1
 
 - :white_check_mark: Update to turf@5.1.0
 
-## v13.7.0
+### v13.7.0
 
 - :rocket: Allow priority text value to be set on network segments
 - :rocket: Add `st/nd/rd/th` synonyms for streets that don't have them and add as synonym

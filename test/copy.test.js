@@ -50,3 +50,26 @@ tape('copy.js output - network', (t) => {
         t.end();
     });
 });
+
+tape('copy.js output - network (garbage)', (t) => {
+    let tempFile = tmp.tmpNameSync();
+    copy.init({
+        id: 0,
+        read: __dirname + '/fixtures/copy.sample-input-network-garbage.geojson',
+        output: tempFile,
+        type: 'network',
+        total: 1,
+        map: __dirname + '/../lib/map/osmium.js',
+        solo: true,
+        error: false,
+        tokens: tokenize.createReplacer(['et'])
+    });
+    copy.start(() => {
+        if (process.env.UPDATE) {
+            fs.createReadStream(tempFile).pipe(fs.createWriteStream(path.resolve(__dirname, './fixtures/copy.sample-output-network-garbage.psv')));
+            t.fail('updated fixture');
+        } else
+            t.equal(fs.readFileSync(tempFile).toString(), fs.readFileSync(__dirname + '/fixtures/copy.sample-output-network-garbage.psv').toString(), 'output is as expected');
+        t.end();
+    });
+});

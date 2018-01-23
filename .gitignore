@@ -3,10 +3,11 @@ scores.csv
 data/
 *.mbtiles
 *.geojsonl
-*.geojson
 
 # Logs
 logs
+LOG
+LOG.old.*
 *.log
 
 # Runtime data

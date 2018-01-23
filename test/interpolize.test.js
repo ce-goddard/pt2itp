@@ -165,35 +165,38 @@ test('Interpolize', (t) => {
         ]
     }];
 
-    let res = interpolize('Battleridge Place', segs);
+    let res = interpolize(segs);
 
     delete res.id;
 
-    t.deepEquals(res, {
-        type: 'Feature',
-        properties: {
-            'carmen:text': 'Battleridge Place',
-            "carmen:center": [ -77.2107258439064, 39.176966996844406 ],
-            'carmen:rangetype':'tiger',
-            'carmen:parityl':[ ['O'], null],
-            'carmen:lfromhn':[ [1] , null],
-            'carmen:ltohn':  [ [21], null],
-            'carmen:parityr':[['E'], null],
-            'carmen:rfromhn':[ [0], null],
-            'carmen:rtohn':  [ [20] ,null],
-            'carmen:addressnumber':[null,['8','9','10','11']]
-        },
-        'geometry':{
-            'type':'GeometryCollection',
-            'geometries':[{
-                'type':'MultiLineString',
-                'coordinates':[[[-77.21062123775481,39.17687343078357],[-77.21064805984497,39.1773849237293]]]
-            },{
-                'type':'MultiPoint',
-                'coordinates': [[-77.21054881811142,39.1769482836422],[-77.2107258439064,39.176966996844406], [-77.21056759357452,39.17731007133552], [-77.21077680587769,39.177320467506085]]
-            }]
-        }
-    }, 'has expected props');
+    t.equals(res.type, 'Feature', 'is feature');
+
+    t.deepEquals(res.properties, {
+        'carmen:rangetype':'tiger',
+        'carmen:parityl':[ ['O'], null],
+        'carmen:lfromhn':[ [1] , null],
+        'carmen:ltohn':  [ [21], null],
+        'carmen:parityr':[['E'], null],
+        'carmen:rfromhn':[ [0], null],
+        'carmen:rtohn':  [ [20] ,null],
+        'carmen:addressnumber':[null,['8','10','9','11']]
+    }, 'has expected properties');
+
+    t.deepEquals(res.geometry, {
+        'type':'GeometryCollection',
+        'geometries':[{
+            'type':'MultiLineString',
+            'coordinates':[[[-77.21062123775481,39.17687343078357],[-77.21064805984497,39.1773849237293]]]
+        },{
+            type: 'MultiPoint',
+            coordinates: [
+                [ -77.21054881811142, 39.1769482836422 ],
+                [ -77.21056759357452, 39.17731007133552 ],
+                [ -77.2107258439064, 39.176966996844406 ],
+                [ -77.21077680587769, 39.177320467506085 ]
+            ]
+        }]
+    }, 'has expected geometry');
 
     t.end();
 });
@@ -249,7 +252,7 @@ test('Interpolize - Continious network - unique address duplicate num', (t) => {
         ]
     }];
 
-    let res = interpolize('Complicated Ave', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -312,7 +315,7 @@ test('Interpolize - Continious network - unique address duplicate num - differen
         ]
     }];
 
-    let res = interpolize('Complicated Ave', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -366,7 +369,7 @@ test('Interpolize - Ignore addresses above (average * 5) away from line', (t) =>
         ]
     }];
 
-    let res = interpolize('Hill Top Road', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -416,7 +419,7 @@ test('Interpolize - Addr past line end', (t) => {
         ]
     }];
 
-    let res = interpolize('Battleridge Place', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -466,7 +469,7 @@ test('Interpolize - Addr past line end - opposite', (t) => {
         ]
     }];
 
-    let res = interpolize('Battleridge Place', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -513,7 +516,7 @@ test('Interpolize - Addr past line end - bend', (t) => {
         ]
     }];
 
-    let res = interpolize('Battleridge Place', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -560,7 +563,7 @@ test('Interpolize - Addr past line end - bend - reverse', (t) => {
         ]
     }];
 
-    let res = interpolize('Battleridge Place', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -628,7 +631,7 @@ test('Interpolize - Hooked Road', (t) => {
         ]
     }];
 
-    let res = interpolize('Tommy Bell Pl', segs, { debug: true });
+    let res = interpolize(segs, { debug: true });
 
     delete res.id;
 
@@ -657,7 +660,7 @@ test('Interpolize - No address cluster', (t) => {
         }
     }];
 
-    let res = interpolize('Tommy Bell Pl', segs);
+    let res = interpolize(segs);
     delete res.id;
 
     if (process.env.UPDATE) {
