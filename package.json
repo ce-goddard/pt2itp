@@ -1,6 +1,6 @@
 {
   "name": "pt2itp",
-  "version": "14.3.0",
+  "version": "14.3.0-dev-br-address",
   "description": "Attach interpolation values given a road network and address points",
   "main": "index.js",
   "bin": {
@@ -18,7 +18,7 @@
   "license": "BSD-2-Clause ",
   "dependencies": {
     "@mapbox/carmen": "24.1.12",
-    "@mapbox/geocoder-abbreviations": "2.1.6",
+    "@mapbox/geocoder-abbreviations": "https://mapbox-npm.s3.amazonaws.com/package/mapbox-geocoder-abbreviations-v2.1.6-2-g5c673a1-15df8a33cb2872d98f32098e4a7843f8ffb0ce45.tgz",
     "@mapbox/geojson-area": "^0.2.2",
     "@mapbox/mbtiles": "^0.9.0",
     "@mapbox/tile-cover": "^3.0.2",
